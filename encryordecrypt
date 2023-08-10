@@ -1,0 +1,54 @@
+import random
+import string
+
+def validate_key(key):
+    if not key.isdigit():
+        return False
+    return True
+
+def generate_key():
+    key_length = random.randint(5, 15)
+    key = ''.join(random.choices(string.ascii_letters + string.digits, k=key_length))
+    return key
+
+def encrypt_message(message, key):
+    encrypted_message = ""
+    for char in message:
+        if char.isalpha():
+            ascii_offset = ord('A') if char.isupper() else ord('a')
+            encrypted_char = chr((ord(char) - ascii_offset + key) % 26 + ascii_offset)
+            encrypted_message += encrypted_char
+        else:
+            encrypted_message += char
+    return encrypted_message
+
+def decrypt_message(encrypted_message, key):
+    decrypted_message = ""
+    for char in encrypted_message:
+        if char.isalpha():
+            ascii_offset = ord('A') if char.isupper() else ord('a')
+            decrypted_char = chr((ord(char) - ascii_offset - key) % 26 + ascii_offset)
+            decrypted_message += decrypted_char
+        else:
+            decrypted_message += char
+    return decrypted_message
+
+def main():
+    message = input("Enter your message: ")
+    key = input("Enter the encryption key (a number or 'random' for random key generation): ")
+
+    if key.lower() == 'random':
+        key = generate_key()
+        print("Generated encryption key:", key)
+    elif not validate_key(key):
+        print("Invalid key. Key must be a numeric value.")
+        return
+
+    encrypted_message = encrypt_message(message, int(key))
+    decrypted_message = decrypt_message(encrypted_message, int(key))
+
+    print("Encrypted message:", encrypted_message)
+    print("Decrypted message:", decrypted_message)
+
+if __name__ == '__main__':
+    main()
